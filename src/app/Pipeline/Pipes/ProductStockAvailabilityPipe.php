@@ -10,7 +10,6 @@ class ProductStockAvailabilityPipe
 {
     public function __construct(protected CheckStockAction $action)
     {}
-
     public function handle(CartDTO $cart, $next)
     {
         $cart->items->map(function (CartItemDTO $item) {

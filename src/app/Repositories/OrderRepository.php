@@ -52,12 +52,29 @@ final readonly class OrderRepository implements OrderRepositoryInterface
 
     public function getOrders(): Collection
     {
-        return $this->model->where('customer_id', AuthHelper::customerId())->with('items')->get();
+        return $this->model
+            ->where('customer_id', AuthHelper::customerId())
+            ->with('items')->get();
     }
 
     public function getById(int $orderId): Order
     {
-        return $this->model->findOrFail($orderId);
+        return $this->model->where(
+            [
+                'id' => $orderId,
+                'customer_id' => AuthHelper::customerId()
+            ]
+        )->firstOrFail();
+    }
+
+    public function delete(int $orderId): void
+    {
+        $this->model->where(
+            [
+                'id' => $orderId,
+                'customer_id' => AuthHelper::customerId()
+            ]
+        )->delete();
     }
 
 }

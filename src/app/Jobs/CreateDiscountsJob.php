@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Services\DiscountService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -19,8 +20,7 @@ class CreateDiscountsJob implements ShouldQueue
     {}
 
     /**
-     * Execute the job.
-     * @throws \Exception
+     * @throws Exception
      */
     public function handle(): void
     {
