@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Data;
+namespace App\Data\Order;
 
-use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 
-class OrderDTO extends Data
+class CreatedOrderDTO extends Data
 {
     public function __construct(
-        public Collection $items,
+        public int $id,
         public float $total,
         public float $discounted_total,
-        public int $customer_id
     ) {}
 }

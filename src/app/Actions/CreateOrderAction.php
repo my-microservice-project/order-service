@@ -3,7 +3,7 @@
 namespace App\Actions;
 
 use App\Data\Cart\CartDTO;
-use App\Data\CreatedOrderDTO;
+use App\Data\Order\CreatedOrderDTO;
 use App\Services\OrderService;
 use Exception;
 

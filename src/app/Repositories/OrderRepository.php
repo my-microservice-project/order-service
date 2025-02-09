@@ -2,13 +2,18 @@
 
 namespace App\Repositories;
 
-use App\Data\CreatedOrderDTO;
-use App\Data\OrderDTO;
+use App\Data\Campaign\DiscountsDTO;
+use App\Data\Order\CreatedOrderDTO;
+use App\Data\Order\OrderBasicDTO;
+use App\Data\Order\OrderDTO;
+use App\Enums\QueueEnum;
 use App\Exceptions\OrderCanNotCreatedException;
+use App\Jobs\CreateDiscountsJob;
 use App\Models\Order;
-use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\OrderItemRepositoryInterface;
+use App\Repositories\Contracts\OrderRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 final readonly class OrderRepository implements OrderRepositoryInterface
@@ -25,13 +30,17 @@ final readonly class OrderRepository implements OrderRepositoryInterface
     {
         try {
             return DB::transaction(function () use ($orderData) {
-                $order = $this->model->create([
-                    'customer_id' => $orderData->customer_id,
-                    'total' => $orderData->total,
-                    'discounted_total' => $orderData->discounted_total,
-                ]);
+                $order = $this->model->create(OrderBasicDTO::from($orderData)->toArray());
 
                 $this->orderItemRepository->createItems($order, $orderData->items);
+
+                if (collect($orderData->campaigns->appliedCampaigns)->isNotEmpty()) {
+
+                    $discounts = DiscountsDTO::fromAppliedCampaigns($order->id, $orderData->campaigns->appliedCampaigns);
+
+                    CreateDiscountsJob::dispatch($discounts)->onQueue(QueueEnum::CREATE_DISCOUNTS->getValue());
+
+                }
 
                 return CreatedOrderDTO::from($order);
             });
@@ -39,4 +48,5 @@ final readonly class OrderRepository implements OrderRepositoryInterface
             throw new OrderCanNotCreatedException();
         }
     }
+
 }

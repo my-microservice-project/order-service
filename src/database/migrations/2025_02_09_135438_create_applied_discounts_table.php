@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('applied_discounts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('discount_id');
             $table->string('campaign_name');
             $table->string('campaign_type');
             $table->float('discount_amount');

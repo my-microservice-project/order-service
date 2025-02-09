@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Data\Cart\CartDTO;
-use App\Data\CreatedOrderDTO;
+use App\Data\Order\CreatedOrderDTO;
+use App\Exceptions\OrderCanNotCreatedException;
 use App\Managers\OrderManager;
 use App\Repositories\Contracts\OrderRepositoryInterface;
-use App\Exceptions\OrderCanNotCreatedException;
 use Exception;
 
 class OrderService

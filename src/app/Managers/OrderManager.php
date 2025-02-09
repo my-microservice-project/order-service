@@ -5,7 +5,7 @@ namespace App\Managers;
 use App\Actions\GetCampaignAction;
 use App\Data\Campaign\CampaignResultDTO;
 use App\Data\Cart\CartDTO;
-use App\Data\OrderDTO;
+use App\Data\Order\OrderDTO;
 use Exception;
 use Illuminate\Support\Collection;
 
@@ -43,15 +43,6 @@ class OrderManager
         return $this;
     }
 
-    public function manageOrder(): OrderDTO
-    {
-        return new OrderDTO(
-            items: $this->orderItems,
-            total: $this->total,
-            discounted_total: $this->campaigns->finalTotal,
-            customer_id: $this->customerId
-        );
-    }
 
     /**
      * @throws Exception
@@ -60,5 +51,16 @@ class OrderManager
     {
         $this->campaigns =  (new GetCampaignAction())->execute($cart);
         return $this;
+    }
+
+    public function manageOrder(): OrderDTO
+    {
+        return new OrderDTO(
+            items: $this->orderItems,
+            total: $this->total,
+            discounted_total: $this->campaigns->finalTotal,
+            customer_id: $this->customerId,
+            campaigns: $this->campaigns
+        );
     }
 }

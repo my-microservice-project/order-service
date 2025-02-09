@@ -39,3 +39,14 @@ services:
       - "./data/postgresql_data:/var/lib/postgresql/data"
     networks:
       - shared_network
+
+  supervisor:
+    build: 'docker/supervisor'
+    working_dir: /app
+    container_name: "supervisor_${APP_NAME}"
+    volumes:
+      - '.:/app'
+      - './docker/supervisor/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf'
+      - './docker/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf'
+    networks:
+      - shared_network

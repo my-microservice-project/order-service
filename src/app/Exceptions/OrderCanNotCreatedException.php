@@ -2,10 +2,9 @@
 
 namespace App\Exceptions;
 
-use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
-class OrderCanNotCreatedException extends Exception
+class OrderCanNotCreatedException extends BaseException
 {
     public function __construct()
     {

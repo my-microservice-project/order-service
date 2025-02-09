@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Contracts;
 
-use App\Data\CreatedOrderDTO;
-use App\Data\OrderDTO;
+use App\Data\Order\CreatedOrderDTO;
+use App\Data\Order\OrderDTO;
 
 interface OrderRepositoryInterface
 {
