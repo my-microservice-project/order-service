@@ -7,4 +7,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(TokenValidationMiddleware::class)->group(function () {
     Route::resource('orders', OrderController::class)->only(['index','store']);
+    Route::get('orders/{orderId}/discounts', [OrderController::class, 'getDiscounts']);
 });

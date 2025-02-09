@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @method create(array $array)
+ * @property mixed $total
  */
 class Order extends Model
 {
@@ -28,5 +29,10 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function appliedDiscounts(): HasMany
+    {
+        return $this->hasMany(AppliedDiscounts::class);
     }
 }

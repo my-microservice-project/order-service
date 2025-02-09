@@ -55,4 +55,9 @@ final readonly class OrderRepository implements OrderRepositoryInterface
         return $this->model->where('customer_id', AuthHelper::customerId())->with('items')->get();
     }
 
+    public function getById(int $orderId): Order
+    {
+        return $this->model->findOrFail($orderId);
+    }
+
 }

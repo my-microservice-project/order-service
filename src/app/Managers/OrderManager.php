@@ -43,7 +43,6 @@ class OrderManager
         return $this;
     }
 
-
     /**
      * @throws Exception
      */

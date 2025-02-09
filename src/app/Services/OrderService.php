@@ -6,6 +6,7 @@ use App\Data\Cart\CartDTO;
 use App\Data\Order\CreatedOrderDTO;
 use App\Exceptions\OrderCanNotCreatedException;
 use App\Managers\OrderManager;
+use App\Models\Order;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use Exception;
 
@@ -33,5 +34,10 @@ class OrderService
         } catch (Exception $e) {
             throw new OrderCanNotCreatedException();
         }
+    }
+
+    public function getOrderById(int $orderId): Order
+    {
+        return $this->orderRepository->getById($orderId);
     }
 }
