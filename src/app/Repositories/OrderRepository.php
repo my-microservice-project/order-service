@@ -12,8 +12,9 @@ use App\Jobs\CreateDiscountsJob;
 use App\Models\Order;
 use App\Repositories\Contracts\OrderItemRepositoryInterface;
 use App\Repositories\Contracts\OrderRepositoryInterface;
+use BugraBozkurt\InterServiceCommunication\Helpers\AuthHelper;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 final readonly class OrderRepository implements OrderRepositoryInterface
@@ -47,6 +48,11 @@ final readonly class OrderRepository implements OrderRepositoryInterface
         } catch (Throwable $e) {
             throw new OrderCanNotCreatedException();
         }
+    }
+
+    public function getOrders(): Collection
+    {
+        return $this->model->where('customer_id', AuthHelper::customerId())->with('items')->get();
     }
 
 }

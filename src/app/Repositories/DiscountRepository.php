@@ -20,4 +20,9 @@ final class DiscountRepository implements DiscountRepositoryInterface
         return true;
     }
 
+    public function getDiscountsTotalByOrderId(int $orderId): float
+    {
+        return $this->model->where('order_id', $orderId)->sum('discount_amount');
+    }
+
 }

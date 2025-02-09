@@ -8,4 +8,6 @@ use App\Data\Order\OrderDTO;
 interface OrderRepositoryInterface
 {
     public function create(OrderDTO $orderData): CreatedOrderDTO;
+
+    public function getOrders();
 }

@@ -6,5 +6,5 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->middleware(TokenValidationMiddleware::class)->group(function () {
-    Route::post('orders', [OrderController::class, 'store']);
+    Route::resource('orders', OrderController::class)->only(['index','store']);
 });
