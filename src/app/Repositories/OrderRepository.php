@@ -88,4 +88,12 @@ final readonly class OrderRepository implements OrderRepositoryInterface
         });
     }
 
+    public function getRevenue(array $customerIds): Collection
+    {
+        return $this->model
+            ->whereIn('customer_id', $customerIds)
+            ->selectRaw('sum(total) as revenue, customer_id')
+            ->groupBy('customer_id')
+            ->get();
+    }
 }
