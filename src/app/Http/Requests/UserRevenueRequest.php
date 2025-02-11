@@ -15,7 +15,8 @@ use OpenApi\Attributes as OA;
             property: "user_ids",
             description: "List of user IDs",
             type: "array",
-            items: new OA\Items(type: "integer")
+            items: new OA\Items(type: "integer"),
+            example: [1, 2, 3]
         )
     ],
     type: "object"

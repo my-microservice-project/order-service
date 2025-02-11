@@ -17,7 +17,7 @@ class GetCampaignAction
         $response = Campaign::post('/api/v1/calculate-discount', ['items' => $cart->items->toArray()]);
 
         if (!$response->successful()) {
-            throw new Exception("Failed to get campaign for product {$cart->items->first()->productId}");
+            throw new Exception('Campaign service is not available');
         }
 
         $data = $response->json('data');

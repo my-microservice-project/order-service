@@ -76,7 +76,6 @@ class OrderController extends Controller
         return CreatedOrderResource::make($createdOrder)->additional(['success'=> true]);
     }
 
-
     #[OA\Delete(
         path: "/api/v1/orders/{orderId}",
         description: "Deletes an order by its ID",
@@ -89,7 +88,7 @@ class OrderController extends Controller
             new OA\Parameter(name: "orderId", description: "Order ID to delete", in: "path", required: true, schema: new OA\Schema(type: "integer"))
         ],
         responses: [
-            new OA\Response(response: 200, description: "Order deleted successfully", content: new OA\JsonContent(type: "object", properties: [new OA\Property(property: "success", type: "boolean")])),
+            new OA\Response(response: 200, description: "Order deleted successfully", content: new OA\JsonContent(properties: [new OA\Property(property: "success", type: "boolean")], type: "object")),
             new OA\Response(response: 404, description: "Order not found"),
             new OA\Response(response: 500, description: "Internal Server Error")
         ]

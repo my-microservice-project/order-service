@@ -3,8 +3,6 @@
 namespace App\Actions;
 
 use App\Data\Cart\CartDTO;
-use App\Pipeline\Pipes\CartHasProductsPipe;
-use App\Pipeline\Pipes\ProductStockAvailabilityPipe;
 use Illuminate\Pipeline\Pipeline;
 
 class ValidateOrderItemsAction
@@ -13,10 +11,7 @@ class ValidateOrderItemsAction
     {
         app(Pipeline::class)
             ->send($cart)
-            ->through([
-                CartHasProductsPipe::class,
-                ProductStockAvailabilityPipe::class,
-            ])
+            ->through(config('cart.validation_pipes'))
             ->then(function ($payload) {
                 return $payload;
             });

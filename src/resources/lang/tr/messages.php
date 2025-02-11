@@ -6,4 +6,5 @@ return [
     'stock_not_enough' => 'Yetersiz stok.',
     'product_not_found' => 'Ürün bulunamadı.',
     'order_not_created' => 'Sipariş oluşturulamadı.',
+    'price_not_match' => 'Ürün fiyatı eşleşmiyor.',
 ];

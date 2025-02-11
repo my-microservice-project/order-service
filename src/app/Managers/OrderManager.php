@@ -40,6 +40,7 @@ class OrderManager
     public function calculateTotalByLine(): static
     {
         $this->orderItems->each(fn(&$item) => $item->line_total = $item->unit_price * $item->quantity);
+
         return $this;
     }
 
@@ -48,9 +49,24 @@ class OrderManager
      */
     public function loadCampaign(CartDTO $cart): static
     {
-        $this->campaigns =  (new GetCampaignAction())->execute($cart);
+        try {
+            $this->campaigns = (new GetCampaignAction())->execute($cart);
+        } catch (Exception $e) {
+
+            if (!isset($this->total)) {
+                $this->calculateTotal();
+            }
+
+            $this->campaigns = new CampaignResultDTO(
+                appliedCampaigns: [],
+                finalTotal: $this->total,
+            );
+        }
+
         return $this;
     }
+
+
 
     public function manageOrder(): OrderDTO
     {

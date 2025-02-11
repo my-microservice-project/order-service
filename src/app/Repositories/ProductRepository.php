@@ -2,21 +2,25 @@
 
 namespace App\Repositories;
 
+use App\Clients\ProductServiceClient;
+use App\Data\Product\ProductPriceAvailableDTO;
 use App\Data\Product\ProductStockAvailableDTO;
-use App\Enums\CacheEnum;
-use App\Exceptions\ServiceUnavailable;
+use App\Exceptions\PriceNotMatchException;
 use App\Exceptions\StockNotEnoughException;
-use App\Exceptions\ProductNotFoundException;
+use App\Managers\ProductCacheManager;
 use App\Repositories\Contracts\ProductRepositoryInterface;
-use BugraBozkurt\InterServiceCommunication\Facades\Stock;
-use Illuminate\Support\Facades\Cache;
 
-class ProductRepository implements ProductRepositoryInterface
+readonly class ProductRepository implements ProductRepositoryInterface
 {
+    public function __construct(
+        private ProductCacheManager  $cacheManager,
+        private ProductServiceClient $serviceClient
+    ) {}
+
     /**
+     * @param int $productId
+     * @param int $quantity
      * @throws StockNotEnoughException
-     * @throws ServiceUnavailable
-     * @throws ProductNotFoundException
      */
     public function checkStock(int $productId, int $quantity): void
     {
@@ -29,59 +33,43 @@ class ProductRepository implements ProductRepositoryInterface
 
     /**
      * @param int $productId
-     * @return ProductStockAvailableDTO
-     * @throws ServiceUnavailable
-     * @throws ProductNotFoundException
+     * @param float $unitPrice
+     * @throws PriceNotMatchException
      */
+    public function checkPrice(int $productId, float $unitPrice): void
+    {
+        $priceData = $this->getPriceData($productId);
+
+        if($priceData->price != $unitPrice) {
+            throw new PriceNotMatchException();
+        }
+    }
+
     private function getStockData(int $productId): ProductStockAvailableDTO
     {
-        $cachedStock = Cache::get($this->getCacheKey($productId));
+        $cachedStock = $this->cacheManager->getStock($productId);
 
         if ($cachedStock !== null) {
-            return new ProductStockAvailableDTO(
-                productId: $productId,
-                quantity: $cachedStock
-            );
+            return new ProductStockAvailableDTO(productId: $productId, quantity: $cachedStock);
         }
 
-        return $this->fetchStockFromService($productId);
+        $stockData = $this->serviceClient->fetchStock($productId);
+        $this->cacheManager->setStock($productId, $stockData->quantity);
+
+        return $stockData;
     }
 
-    /**
-     * @param int $productId
-     * @return ProductStockAvailableDTO
-     * @throws ServiceUnavailable
-     * @throws ProductNotFoundException
-     */
-    private function fetchStockFromService(int $productId): ProductStockAvailableDTO
+    private function getPriceData(int $productId): ProductPriceAvailableDTO
     {
-        $response = Stock::get("/api/v1/stocks/{$productId}");
+        $cachedPrice = $this->cacheManager->getPrice($productId);
 
-        if (!$response->successful()) {
-            if ($response->status() === 404) {
-                throw new ProductNotFoundException();
-            }
-
-            throw new ServiceUnavailable();
+        if ($cachedPrice !== null) {
+            return new ProductPriceAvailableDTO(productId: $productId, price: $cachedPrice);
         }
 
-        $stockData = $response->json('data');
+        $priceData = $this->serviceClient->fetchPrice($productId);
+        $this->cacheManager->setPrice($productId, $priceData->price);
 
-        if (empty($stockData['quantity'])) {
-            throw new ProductNotFoundException();
-        }
-
-        return new ProductStockAvailableDTO(
-            productId: $productId,
-            quantity: $stockData['quantity']
-        );
-    }
-
-    /**
-     * Cache anahtarını oluştur
-     */
-    private function getCacheKey(int $productId): string
-    {
-        return CacheEnum::STOCK->getValue() . $productId;
+        return $priceData;
     }
 }

@@ -20,7 +20,7 @@ class UserRevenueController extends Controller
         ),
         tags: ["Users Revenue"],
         responses: [
-            new OA\Response(response: 200, description: "Revenue retrieved successfully", content: new OA\JsonContent(type: "object", properties: [new OA\Property(property: "revenue", type: "number", format: "float")])),
+            new OA\Response(response: 200, description: "Revenue retrieved successfully", content: new OA\JsonContent(properties: [new OA\Property(property: "revenue", type: "number", format: "float")], type: "object")),
             new OA\Response(response: 400, description: "Bad Request"),
             new OA\Response(response: 500, description: "Internal Server Error")
         ]

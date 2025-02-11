@@ -19,7 +19,21 @@ use OpenApi\Attributes as OA;
             property: "items",
             description: "List of items in the order",
             type: "array",
-            items: new OA\Items(ref: "#/components/schemas/CartItemDTO")
+            items: new OA\Items(
+                properties: [
+                    new OA\Property(property: "product_id", type: "integer", example: 101),
+                    new OA\Property(property: "quantity", type: "integer", example: 2),
+                    new OA\Property(property: "unit_price", type: "number", format: "float", example: 99.99)
+                ],
+                type: "object"
+            ),
+            example: [
+                [
+                    "product_id" => 101,
+                    "quantity" => 1,
+                    "unit_price" => 120.75
+                ]
+            ]
         )
     ],
     type: "object"
